@@ -1,0 +1,95 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>THREE.FlyControls2</title>
+	<style type="text/css">
+	
+	body {
+		margin: 0;
+		overflow: hidden;
+	}
+
+	#info {
+		position: absolute;
+		top: 20px;
+		left: 50%;
+		transform: translate( -50%, 0 );
+		background: rgba( 0, 0, 0, 0.5 );
+		color: #fff;
+		font-family: monospace;
+		text-align: center;
+		padding: 10px;
+	}
+
+	</style>
+</head>
+<body>
+	<canvas id="canvas"></canvas>
+	<div id="info">
+		ASWD to move<br>
+		Mouse hold and drag to rotate
+	</div>
+	<script type="text/javascript" src="https://threejs.org/build/three.min.js"></script>
+	<script type="text/javascript" src="THREE.FlyControls2.js"></script>
+	<script type="text/javascript">
+	
+	var renderer;
+
+	var scene, camera;
+	var controls;
+
+	( function init() {
+
+		renderer = new THREE.WebGLRenderer( {
+			canvas: document.getElementById( 'canvas' ),
+			alpha: true,
+			antialias: false
+		} );
+
+		renderer.setSize( window.innerWidth, window.innerHeight );
+		renderer.setPixelRatio( window.devicePixelRatio );
+
+		scene = new THREE.Scene();
+		camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.1, 1000 );
+
+		controls = new THREE.FlyControls2( camera, renderer.domElement );
+
+		var boxGeometry = new THREE.BoxBufferGeometry();
+		var boxMaterial = new THREE.MeshBasicMaterial();
+		var box = new THREE.Mesh( boxGeometry, boxMaterial );
+
+		box.onBeforeRender = function ( renderer, scene, camera, geometry, material, group ) {
+
+			material.color = new THREE.Color( 'red' );
+			material.needsUpdate = true;
+
+		}
+
+		box.position.y = 0.5;
+		scene.add( box );
+
+		var grid = new THREE.GridHelper( 10, 10, 10, 10 );
+		scene.add( grid );
+
+		camera.position.setScalar( 10, 20, 20 );
+		camera.lookAt( 0, 0, 0 );
+
+		window.requestAnimationFrame( animate );
+
+	} )();
+
+	function animate() {
+
+		controls.update();
+
+		renderer.render( scene, camera );
+
+		window.requestAnimationFrame( animate );
+
+	}
+
+	</script>
+</body>
+</html>
+
